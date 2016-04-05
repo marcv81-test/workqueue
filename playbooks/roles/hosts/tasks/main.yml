@@ -6,4 +6,4 @@
     line: "{{hostvars[item].ansible_ssh_host}} {{hostvars[item].ansible_hostname}}"
     regexp: " {{hostvars[item].ansible_hostname}}$"
     state: present
-  with_items: play_hosts
+  with_items: "{{ play_hosts }}"
