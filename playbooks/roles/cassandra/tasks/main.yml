@@ -31,7 +31,5 @@
   with_items:
   - cassandra
 
-- name: Service is started
-  service:
-    name: cassandra
-    state: started
+- name: Setup cluster
+  include: cluster.yml

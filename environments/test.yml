@@ -19,3 +19,7 @@ groups:
     hosts:
     - cloud-01
     - cloud-02
+  cassandra_seed:
+    hosts:
+    - cloud-01
+    - cloud-02

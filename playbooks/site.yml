@@ -19,3 +19,21 @@
   gather_facts: False
   roles:
   - cassandra
+
+- hosts: cassandra_seed
+  gather_facts: False
+  tasks:
+  - name: Cassandra seed nodes are started
+    service:
+      name: cassandra
+      state: started
+  serial: 1
+
+- hosts: cassandra
+  gather_facts: False
+  tasks:
+  - name: Cassandra nodes are started
+    service:
+      name: cassandra
+      state: started
+  serial: 1
