@@ -19,6 +19,3 @@ groups:
     hosts:
     - cloud-01
     - cloud-02
-  opscenter:
-    hosts:
-    - cloud-01

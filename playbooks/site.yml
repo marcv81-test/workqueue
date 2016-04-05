@@ -19,8 +19,3 @@
   gather_facts: False
   roles:
   - cassandra
-
-- hosts: opscenter
-  gather_facts: False
-  roles:
-  - opscenter
