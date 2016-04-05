@@ -1,0 +1,9 @@
+---
+
+- name: Hosts are aware of each other
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{hostvars[item].ansible_ssh_host}} {{hostvars[item].ansible_hostname}}"
+    regexp: " {{hostvars[item].ansible_hostname}}$"
+    state: present
+  with_items: play_hosts

@@ -1,0 +1,26 @@
+---
+
+# Gather facts
+- hosts: all
+  tasks:
+  - ping:
+
+- hosts: all
+  gather_facts: False
+  roles:
+  - hosts
+
+- hosts: rabbitmq
+  gather_facts: False
+  roles:
+  - rabbitmq
+
+- hosts: cassandra
+  gather_facts: False
+  roles:
+  - cassandra
+
+- hosts: opscenter
+  gather_facts: False
+  roles:
+  - opscenter

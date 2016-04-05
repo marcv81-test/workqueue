@@ -1,0 +1,24 @@
+---
+
+hosts:
+  cloud-01:
+    box: ubuntu/wily64
+    ip: 192.168.56.101
+    memory: 2048
+  cloud-02:
+    box: ubuntu/wily64
+    ip: 192.168.56.102
+    memory: 2048
+
+groups:
+  rabbitmq:
+    hosts:
+    - cloud-01
+    - cloud-02
+  cassandra:
+    hosts:
+    - cloud-01
+    - cloud-02
+  opscenter:
+    hosts:
+    - cloud-01

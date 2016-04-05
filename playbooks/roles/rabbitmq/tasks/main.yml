@@ -1,0 +1,38 @@
+---
+
+- name: Packages list is up to date
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Packages are installed
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+  - rabbitmq-server
+
+- name: Read Erlang cookie from first node
+  command: cat /var/lib/rabbitmq/.erlang.cookie
+  register: global_erlang_cookie
+  run_once: True
+  changed_when: False
+
+- name: Synchronize Erlang cookie with first node
+  include: erlang_cookie_1.yml
+  when: inventory_hostname != hostvars[groups['rabbitmq'][0]]['inventory_hostname']
+
+- name: Service is started
+  service:
+    name: rabbitmq-server
+    state: started
+
+- name: Form cluster with first node
+  include: cluster_1.yml
+  when: inventory_hostname != hostvars[groups['rabbitmq'][0]]['inventory_hostname']
+
+- name: Management plugin is enabled
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+  notify: Restart RabbitMQ

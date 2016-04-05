@@ -1,0 +1,18 @@
+---
+
+- name: App is stopped
+  shell: rabbitmqctl stop_app
+
+- name: Cluster is joined
+  shell: "rabbitmqctl join_cluster rabbit@{{ hostvars[groups['rabbitmq'][0]]['inventory_hostname'] }}"
+
+- name: App is started
+  shell: rabbitmqctl start_app
+
+- name: Node is marked as clustered
+  file:
+    path: /var/lib/rabbitmq/.clustered
+    owner: root
+    group: root
+    state: touch
+  changed_when: False

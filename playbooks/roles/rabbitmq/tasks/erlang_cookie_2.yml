@@ -1,0 +1,9 @@
+---
+
+- name: Service is stopped
+  service:
+    name: rabbitmq-server
+    state: stopped
+
+- name: Erlang cookies match
+  shell: printf {{ global_erlang_cookie.stdout }} > /var/lib/rabbitmq/.erlang.cookie
