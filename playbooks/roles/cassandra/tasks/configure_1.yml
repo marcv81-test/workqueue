@@ -1,0 +1,11 @@
+---
+
+- name: Read if node is configured already
+  stat:
+    path: /var/lib/cassandra/.configured
+  register: cassandra_configured
+  changed_when: False
+
+- name: Node is configured
+  include: configure_2.yml
+  when: not cassandra_configured.stat.exists

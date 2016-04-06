@@ -1,0 +1,48 @@
+---
+
+- name: Service is stopped
+  service:
+    name: cassandra
+    state: stopped
+
+- name: Data is removed
+  file:
+    path: /var/lib/cassandra/data/system
+    state: absent
+
+- name: Cluster name is set
+  lineinfile:
+    dest: /etc/cassandra/cassandra.yaml
+    regexp: "^cluster_name:"
+    line: "cluster_name: 'Cluster'"
+
+- name: Interface is set
+  lineinfile:
+    dest: /etc/cassandra/cassandra.yaml
+    regexp: "^listen_address:"
+    line: "listen_address: {{ ansible_host }}"
+
+- name: RPC interface is set
+  lineinfile:
+    dest: /etc/cassandra/cassandra.yaml
+    regexp: "^rpc_address:"
+    line: "rpc_address: {{ ansible_host }}"
+
+- name: Cluster seeds are set
+  lineinfile:
+    dest: /etc/cassandra/cassandra.yaml
+    regexp: "^          - seeds:"
+    line: "          - seeds: '{{ groups['cassandra_seed'] | join(',') }}'"
+
+- name: Snitch is set
+  lineinfile:
+    dest: /etc/cassandra/cassandra.yaml
+    regexp: "^endpoint_snitch:"
+    line: "endpoint_snitch: GossipingPropertyFileSnitch"
+
+- name: Node is marked as configured
+  file:
+    path: /var/lib/cassandra/.configured
+    owner: root
+    group: root
+    state: touch

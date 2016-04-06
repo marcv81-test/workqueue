@@ -31,5 +31,5 @@
   with_items:
   - cassandra
 
-- name: Setup cluster
-  include: cluster.yml
+- name: Nodes are configured
+  include: configure_1.yml
