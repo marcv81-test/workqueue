@@ -14,7 +14,7 @@
   lineinfile:
     dest: /etc/cassandra/cassandra.yaml
     regexp: "^cluster_name:"
-    line: "cluster_name: 'Cluster'"
+    line: "cluster_name: '{{ cluster_name }}'"
 
 - name: Interface is set
   lineinfile:
@@ -32,7 +32,7 @@
   lineinfile:
     dest: /etc/cassandra/cassandra.yaml
     regexp: "^          - seeds:"
-    line: "          - seeds: '{{ groups['cassandra_seed'] | join(',') }}'"
+    line: "          - seeds: '{% for h in groups.cassandra_seed %}{{ hostvars[h].ansible_ssh_host }}{% if not loop.last %},{% endif %}{% endfor %}'"
 
 - name: Snitch is set
   lineinfile:

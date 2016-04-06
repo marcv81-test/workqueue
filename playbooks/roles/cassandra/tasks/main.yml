@@ -33,3 +33,8 @@
 
 - name: Nodes are configured
   include: configure_1.yml
+
+- name: Service is started
+  service:
+    name: cassandra
+    state: started

@@ -11,15 +11,18 @@ hosts:
     memory: 2048
 
 groups:
+
   rabbitmq:
     hosts:
     - cloud-01
     - cloud-02
+
   cassandra:
     hosts:
     - cloud-01
     - cloud-02
+    children:
+    - cassandra_seed
   cassandra_seed:
     hosts:
     - cloud-01
-    - cloud-02
