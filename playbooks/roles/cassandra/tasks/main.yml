@@ -42,7 +42,7 @@
 - name: Custom configuration is installed
   template:
     src: cassandra.yaml
-    dest: /etc/cassandra/cassandra.yaml.default
+    dest: /etc/cassandra/cassandra.yaml
     owner: root
     group: root
     mode: 0644

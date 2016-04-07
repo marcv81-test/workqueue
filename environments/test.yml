@@ -9,6 +9,10 @@ hosts:
     box: ubuntu/wily64
     ip: 192.168.56.102
     memory: 2048
+  cloud-03:
+    box: ubuntu/wily64
+    ip: 192.168.56.103
+    memory: 2048
 
 groups:
 
@@ -16,13 +20,14 @@ groups:
     hosts:
     - cloud-01
     - cloud-02
+    - cloud-03
 
   cassandra:
     hosts:
     - cloud-01
     - cloud-02
-    children:
-    - cassandra_seed
+    - cloud-03
   cassandra_seed:
     hosts:
     - cloud-01
+    - cloud-02

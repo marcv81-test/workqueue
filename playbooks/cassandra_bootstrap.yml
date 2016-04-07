@@ -1,0 +1,34 @@
+---
+
+- name: Start Cassandra seed nodes
+  hosts: cassandra_seed
+  gather_facts: False
+  serial: 1
+  tasks:
+
+  - name: Service is started
+    service:
+      name: cassandra
+      state: started
+    register: seed_start
+
+  - name: Service has time to settle
+    pause:
+      seconds: 30
+    when: seed_start.changed
+
+- name: Start remaining Cassandra nodes
+  hosts: cassandra
+  gather_facts: False
+  tasks:
+
+  - name: Service is started
+    service:
+      name: cassandra
+      state: started
+
+  - name: Node is marked as bootstrapped
+    file:
+      path: /var/lib/cassandra/.bootstrapped
+      state: touch
+    changed_when: False
