@@ -4,28 +4,22 @@ This is a proof of concept for a distributed builds app.
 
 # Setup
 
-## RabbitMQ
-
-    apt-get install rabbitmq-server
-
-## Cassandra
-
-    echo "deb http://www.apache.org/dist/cassandra/debian 33x main" > /etc/apt/sources.list.d/cassandra.list
-    echo "deb-src http://www.apache.org/dist/cassandra/debian 33x main" >> /etc/apt/sources.list.d/cassandra.list
-    gpg --keyserver pgp.mit.edu --recv-keys 749D6EEC0353B12C
-    gpg --export --armor 749D6EEC0353B12C | apt-key add -
-    apt-get update
-    apt-get install cassandra
-    cqlsh <cql/init.cql
-
 ## Python
 
     apt-get install python-virtualenv
     virtualenv venv
     source venv/bin/activate
-    pip install cassandra-driver pika
+    pip install ansible pika cassandra-driver
+
+## Vagrant/Ansible
+
+    export ENVIRONMENT=environments/test.yml
+    vagrant up
+    ansible-playbook -i inventory.py playbooks/site.yml
 
 # Test
+
+    cd app
 
 ## Unit tests
 
