@@ -10,20 +10,20 @@ if [ -z "$CLUSTER" ]; then
 	exit 1
 fi
 
-rm -f "${CLUSTER}.*"
+rm -f \
+	"${CLUSTER}-key.pem" "${CLUSTER}-cert.pem" \
+	"${CLUSTER}-cert.srl" "${CLUSTER}-truststore.jks"
 
-echo "* Generate cluster certificate"
-openssl req -new -x509 \
+echo "* Generate cluster key-certificate"
+openssl req -x509 \
 	-newkey rsa:4096 -subj "/O=${CLUSTER}" -days "${VALIDITY}" -nodes \
-	-keyout "${CLUSTER}.key" -out "${CLUSTER}.cert"
+	-keyout "${CLUSTER}-key.pem" -out "${CLUSTER}-cert.pem"
 
-echo "* Display cluster certificate"
-openssl x509 -in "${CLUSTER}.cert" -text -noout
+echo "* Add cluster certificate to cluster Java truststore"
+keytool \
+	-importcert -alias "${CLUSTER}" -file "${CLUSTER}-cert.pem" -noprompt \
+	-keystore "${CLUSTER}-truststore.jks" -storepass "${PASSWORD}"
 
-echo "* Create cluster truststore and import cluster certificate"
-keytool -keystore "${CLUSTER}.jks" -storepass "${PASSWORD}" \
-	-importcert -alias "${CLUSTER}" -file "${CLUSTER}.cert" -noprompt
-
-echo "* Display cluster truststore"
-keytool -keystore "${CLUSTER}.jks" -storepass "${PASSWORD}" \
-	-list -v
+echo "* Display cluster Java truststore"
+keytool -list \
+	-keystore "${CLUSTER}-truststore.jks" -storepass "${PASSWORD}"

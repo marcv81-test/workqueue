@@ -11,30 +11,36 @@ if [ -z "$CLUSTER" ] || [ -z "$NODE" ]; then
 	exit 1
 fi
 
-rm -f "${NODE}.jks" "${NODE}.csr" "${NODE}.cert"
+rm -f \
+	"${NODE}-key.pem" "${NODE}-cert.pem" \
+	"${NODE}.pkcs12" "${NODE}-keystore.jks"
 
-echo "* Generate node keystore and keypair"
-keytool -keystore "${NODE}.jks" -storepass "${PASSWORD}" \
-	-genkeypair -alias "${NODE}" -dname "O=${CLUSTER}, OU=${NODE}" \
-	-keyalg RSA -keysize 4096 -keypass "${PASSWORD}" -validity "${VALIDITY}"
+echo "* Generate node key and certificate request"
+openssl req \
+	-newkey rsa:4096 -subj "/O=${CLUSTER}/OU=${NODE}" -nodes \
+	-keyout "${NODE}-key.pem" -out "${NODE}-req.pem"
 
-echo "* Import cluster certificate into node keystore"
-keytool -keystore "${NODE}.jks" -storepass "${PASSWORD}" \
-	-importcert -alias "${CLUSTER}" -file "${CLUSTER}.cert" -noprompt
+echo "* Sign node certificate request with cluster key-certificate"
+openssl x509 \
+	-CA "${CLUSTER}-cert.pem" -CAkey "${CLUSTER}-key.pem" -CAcreateserial \
+	-req -in "${NODE}-req.pem" -out "${NODE}-cert.pem" -days "${VALIDITY}"
+rm "${NODE}-req.pem"
 
-echo "* Create node CSR"
-keytool -keystore "${NODE}.jks" -storepass "${PASSWORD}" \
-	-certreq -alias "${NODE}" -file "${NODE}.csr" -keypass "${PASSWORD}"
+echo "* Package node PKCS12 key-certificate"
+openssl pkcs12 -export \
+	-name "${NODE}" -in "${NODE}-cert.pem" -inkey "${NODE}-key.pem" \
+	-out "${NODE}.pkcs12" -passout pass:
 
-echo "* Sign node CSR with cluster certificate"
-openssl x509 -req -CA "${CLUSTER}.cert" -CAkey "${CLUSTER}.key" \
-	-in "${NODE}.csr" -out "${NODE}.cert" -CAcreateserial -days "${VALIDITY}"
-rm "${NODE}.csr"
+echo "* Add node PKCS12 key-certificate to node Java keystore"
+keytool -importkeystore -alias "${NODE}" \
+	-srckeystore "${NODE}.pkcs12" -srcstorepass "" -srcstoretype pkcs12 \
+	-destkeystore "${NODE}-keystore.jks" -deststorepass "${PASSWORD}"
 
-echo "* Import node certificate into node keystore"
-keytool -keystore "${NODE}.jks" -storepass "${PASSWORD}" \
-	-importcert -alias "${NODE}" -file "${NODE}.cert" -keypass "${PASSWORD}"
+echo "* Add cluster certificate to node Java keystore"
+keytool \
+	-importcert -alias "${CLUSTER}" -file "${CLUSTER}-cert.pem" -noprompt \
+	-keystore "${NODE}-keystore.jks" -storepass "${PASSWORD}"
 
-echo "* Display keystore"
-keytool -keystore "${NODE}.jks" -storepass "${PASSWORD}" \
-	-list -v
+echo "* Display node Java keystore"
+keytool -list \
+	-keystore "${NODE}-keystore.jks" -storepass "${PASSWORD}"
