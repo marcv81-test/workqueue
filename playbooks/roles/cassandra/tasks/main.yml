@@ -31,10 +31,18 @@
   with_items:
   - cassandra
 
-- name: Nodes are configured
-  include: configure_1.yml
+- name: Node either bootstrapped already or is ready for bootstrapping
+  include: pre_bootstrap_1.yml
 
-- name: Service is started
-  service:
-    name: cassandra
-    state: started
+- name: Default configuration is backed up
+  shell: cp /etc/cassandra/cassandra.yaml /etc/cassandra/cassandra.yaml.default
+  args:
+    creates: /etc/cassandra/cassandra.yaml.default
+
+- name: Custom configuration is installed
+  template:
+    src: cassandra.yaml
+    dest: /etc/cassandra/cassandra.yaml.default
+    owner: root
+    group: root
+    mode: 0644
