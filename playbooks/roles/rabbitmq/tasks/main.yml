@@ -31,6 +31,10 @@
   include: cluster_1.yml
   when: inventory_hostname != hostvars[groups['rabbitmq'][0]]['inventory_hostname']
 
+- name: Users are configured
+  include: users.yml
+  when: inventory_hostname == hostvars[groups['rabbitmq'][0]]['inventory_hostname']
+
 - name: Management plugin is enabled
   rabbitmq_plugin:
     names: rabbitmq_management

@@ -3,7 +3,9 @@ import pika
 def open_channel():
 	"""Open and configure an AMQP channel"""
 
-	connection = pika.BlockingConnection(pika.ConnectionParameters())
+	connection = pika.BlockingConnection(pika.ConnectionParameters(
+			host='192.168.56.101',
+			credentials=pika.PlainCredentials('user', 'user')))
 	channel = connection.channel()
 
 	channel.basic_qos(prefetch_count=1)
