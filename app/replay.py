@@ -6,7 +6,8 @@ build_id = sys.argv[1]
 return_code = 1
 
 # Cassandra setup
-cluster = cassandra.cluster.Cluster()
+cluster = cassandra.cluster.Cluster(
+		['192.168.56.101', '192.168.56.101'])
 session = cluster.connect('test')
 
 select_statement = session.prepare(

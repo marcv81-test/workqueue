@@ -16,7 +16,8 @@ class DatabaseBuildEventReceiver(
 				util.messaging.open_channel())
 
 		# Cassandra setup
-		self._cluster = cassandra.cluster.Cluster()
+		self._cluster = cassandra.cluster.Cluster(
+				['192.168.56.101', '192.168.56.101'])
 		self._session = self._cluster.connect('test')
 
 		self._statement = self._session.prepare(
