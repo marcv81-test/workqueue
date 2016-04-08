@@ -11,7 +11,7 @@
 
 - name: Node is marked as clustered
   file:
-    path: /var/lib/rabbitmq/.clustered
+    path: /etc/rabbitmq/.clustered
     owner: root
     group: root
     state: touch

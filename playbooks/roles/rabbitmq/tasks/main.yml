@@ -26,6 +26,7 @@
   service:
     name: rabbitmq-server
     state: started
+    enabled: yes
 
 - name: Form cluster with first node
   include: cluster_1.yml

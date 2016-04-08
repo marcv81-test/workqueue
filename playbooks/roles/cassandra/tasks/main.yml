@@ -31,8 +31,18 @@
   with_items:
   - cassandra
 
-- name: Node either bootstrapped already or is ready for bootstrapping
-  include: pre_bootstrap_1.yml
+# Uncomment to reset all nodes (DANGER!)
+#- file: path=/etc/cassandra/.configured state=absent
+
+- name: Check if node is configured
+  stat:
+    path: /etc/cassandra/.configured
+  register: cassandra_configured
+  changed_when: False
+
+- name: Node is reset if not configured
+  include: reset.yml
+  when: not cassandra_configured.stat.exists
 
 - name: Default configuration is backed up
   shell: cp /etc/cassandra/cassandra.yaml /etc/cassandra/cassandra.yaml.default
@@ -46,3 +56,41 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Node is marked as configured
+  file:
+    path: /etc/cassandra/.configured
+    state: touch
+  when: not cassandra_configured.stat.exists
+
+- name: Service is started (first seed)
+  service:
+    name: cassandra
+    state: started
+  when: "'cassandra_seed' in group_names"
+  run_once: yes
+
+- name: Service is ready (first seed)
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: 7000
+  when: "'cassandra_seed' in group_names"
+  run_once: yes
+
+- name: Service is started (all seeds)
+  service:
+    name: cassandra
+    state: started
+  when: "'cassandra_seed' in group_names"
+
+- name: Service is ready (all seeds)
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: 7000
+  when: "'cassandra_seed' in group_names"
+
+- name: Service is started
+  service:
+    name: cassandra
+    state: started
+    enabled: yes

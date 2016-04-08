@@ -19,5 +19,3 @@
   gather_facts: False
   roles:
   - cassandra
-
-- include: cassandra_bootstrap.yml
