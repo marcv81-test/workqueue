@@ -19,3 +19,16 @@
   gather_facts: False
   roles:
   - cassandra
+
+- hosts: cassandra:&cassandra_seed
+  gather_facts: False
+  serial: 1
+  tasks:
+  - name: Cassandra is started (seed)
+    include: start_cassandra.yml
+
+- hosts: cassandra:!cassandra_seed
+  gather_facts: False
+  tasks:
+  - name: Cassandra is started
+    include: start_cassandra.yml

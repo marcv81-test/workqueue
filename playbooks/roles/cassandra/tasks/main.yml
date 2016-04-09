@@ -62,35 +62,3 @@
     path: /etc/cassandra/.configured
     state: touch
   when: not cassandra_configured.stat.exists
-
-- name: Service is started (first seed)
-  service:
-    name: cassandra
-    state: started
-  when: "'cassandra_seed' in group_names"
-  run_once: yes
-
-- name: Service is ready (first seed)
-  wait_for:
-    host: "{{ ansible_host }}"
-    port: 7000
-  when: "'cassandra_seed' in group_names"
-  run_once: yes
-
-- name: Service is started (all seeds)
-  service:
-    name: cassandra
-    state: started
-  when: "'cassandra_seed' in group_names"
-
-- name: Service is ready (all seeds)
-  wait_for:
-    host: "{{ ansible_host }}"
-    port: 7000
-  when: "'cassandra_seed' in group_names"
-
-- name: Service is started
-  service:
-    name: cassandra
-    state: started
-    enabled: yes

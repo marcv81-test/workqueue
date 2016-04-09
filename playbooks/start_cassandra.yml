@@ -1,0 +1,12 @@
+---
+
+- name: Service is started
+  service:
+    name: cassandra
+    state: started
+    enabled: yes
+
+- name: Service is ready
+  wait_for:
+    host: "{{ ansible_host }}"
+    port: 7000
