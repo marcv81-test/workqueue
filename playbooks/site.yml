@@ -1,5 +1,9 @@
 ---
 
+- hosts: localhost
+  roles:
+  - cassandra-certs
+
 # Gather facts
 - hosts: all:!localhost
   tasks:

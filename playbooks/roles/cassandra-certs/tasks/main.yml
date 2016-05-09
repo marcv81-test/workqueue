@@ -1,0 +1,14 @@
+---
+
+- name: Generate cluster CA
+  shell: "./gen_cluster.sh cassandra-{{environment_name}}"
+  args:
+    chdir: certs
+    creates: "cassandra-{{environment_name}}/cluster-cert.pem"
+
+- name: Generate nodes keys
+  shell: "./gen_node.sh cassandra-{{environment_name}} {{item}}"
+  args:
+    chdir: certs
+    creates: "cassandra-{{environment_name}}/{{item}}-cert.pem"
+  with_items: groups.cassandra
