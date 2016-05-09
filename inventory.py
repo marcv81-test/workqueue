@@ -26,9 +26,14 @@ for host, properties in environment['hosts'].iteritems():
     'ansible_become': 'yes',
   }
 
+# Add magic host
+inventory['_meta']['hostvars']['localhost'] = {
+  'ansible_connection': 'local',
+}
+
 # Add magic group with all hosts
 inventory['vagrant'] = {}
-inventory['vagrant']['hosts'] = environment['hosts'].keys()
+inventory['vagrant']['hosts'] = environment['hosts'].keys() + ['localhost']
 
 # Add other groups
 if 'groups' in environment:

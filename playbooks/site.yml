@@ -1,11 +1,11 @@
 ---
 
 # Gather facts
-- hosts: all
+- hosts: all:!localhost
   tasks:
   - ping:
 
-- hosts: all
+- hosts: all:!localhost
   gather_facts: False
   roles:
   - hosts
