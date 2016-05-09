@@ -1,18 +1,16 @@
 #!/usr/bin/python
 
-import os
 import sys
 import yaml
 import json
 
+env_filename = 'environments/vagrant.yml'
+
 # Tentatively load environment
 try:
-  if 'ENVIRONMENT' not in os.environ:
-    raise Exception('ENVIRONMENT is undefined')
-  environment = yaml.load(open(os.environ.get('ENVIRONMENT'), 'r'))
+  environment = yaml.load(open(env_filename, 'r'))
 except Exception, e:
   print >>sys.stderr, str(e)
-  print >>sys.stderr, 'ENVIRONMENT must point to a valid environment definition file'
   exit(-1)
 
 # Initialize empty inventory

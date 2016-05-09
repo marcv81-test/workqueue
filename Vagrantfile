@@ -2,15 +2,13 @@ VAGRANTFILE_VERSION = "2"
 
 require 'yaml'
 
+env_filename = 'environments/vagrant.yml'
+
 # Tentatively load environment
 begin
-  if !ENV.has_key?('ENVIRONMENT')
-    raise Exception, "ENVIRONMENT is undefined"
-  end
-  environment = YAML.load_file(ENV['ENVIRONMENT'])
+  environment = YAML.load_file(env_filename)
 rescue Exception => e
   STDERR.puts 'Error: ' + e.message
-  STDERR.puts 'ENVIRONMENT must point to a valid environment definition file'
   exit(-1)
 end
 
