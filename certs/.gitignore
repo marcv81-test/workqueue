@@ -1,4 +1,4 @@
-/*.pem
-/*.jks
-/*.srl
-/*.pkcs12
+*.pem
+*.jks
+*.srl
+*.pkcs12

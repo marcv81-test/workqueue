@@ -10,20 +10,19 @@ if [ -z "$CLUSTER" ]; then
 	exit 1
 fi
 
-rm -f \
-	"${CLUSTER}-key.pem" "${CLUSTER}-cert.pem" \
-	"${CLUSTER}-cert.srl" "${CLUSTER}-truststore.jks"
+rm -rf ${CLUSTER}
+mkdir ${CLUSTER}
 
 echo "* Generate cluster key-certificate"
 openssl req -x509 \
 	-newkey rsa:4096 -subj "/O=${CLUSTER}" -days "${VALIDITY}" -nodes \
-	-keyout "${CLUSTER}-key.pem" -out "${CLUSTER}-cert.pem"
+	-keyout "${CLUSTER}/cluster-key.pem" -out "${CLUSTER}/cluster-cert.pem"
 
 echo "* Add cluster certificate to cluster Java truststore"
 keytool \
-	-importcert -alias "${CLUSTER}" -file "${CLUSTER}-cert.pem" -noprompt \
-	-keystore "${CLUSTER}-truststore.jks" -storepass "${PASSWORD}"
+	-importcert -alias "${CLUSTER}" -file "${CLUSTER}/cluster-cert.pem" -noprompt \
+	-keystore "${CLUSTER}/cluster-truststore.jks" -storepass "${PASSWORD}"
 
 echo "* Display cluster Java truststore"
 keytool -list \
-	-keystore "${CLUSTER}-truststore.jks" -storepass "${PASSWORD}"
+	-keystore "${CLUSTER}/cluster-truststore.jks" -storepass "${PASSWORD}"
