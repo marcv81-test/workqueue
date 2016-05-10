@@ -11,4 +11,4 @@
   args:
     chdir: playbooks/roles/cassandra-certs/files
     creates: "{{cassandra_cluster}}/{{item}}-keystore.jks"
-  with_items: groups.cassandra
+  with_items: "{{groups.cassandra}}"
