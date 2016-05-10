@@ -24,22 +24,20 @@
     update_cache: yes
     cache_valid_time: 3600
 
-- name: Packages are installed
+- name: Cassandra is installed
   apt:
-    name: "{{item}}"
+    name: cassandra
     state: present
-  with_items:
-  - cassandra
 
-- name: Cluster truststore is installed
+- name: Cluster truststore is available
   copy:
-    src: "../certs/cassandra-{{environment_name}}/cluster-truststore.jks"
-    dest: "/etc/cassandra/cluster-truststore.jks"
+    src: "roles/cassandra-certs/files/{{cassandra_cluster}}/cluster-truststore.jks"
+    dest: "/etc/cassandra/.truststore"
 
-- name: Node keystore is installed
+- name: Node keystore is available
   copy:
-    src: "../certs/cassandra-{{environment_name}}/{{ansible_hostname}}-keystore.jks"
-    dest: "/etc/cassandra/node-keystore.jks"
+    src: "roles/cassandra-certs/files/{{cassandra_cluster}}/{{ansible_hostname}}-keystore.jks"
+    dest: "/etc/cassandra/.keystore"
 
 # Uncomment to reset all nodes (DANGER!)
 #- file: path=/etc/cassandra/.configured state=absent

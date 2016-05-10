@@ -1,12 +1,12 @@
 #!/bin/bash
 
-PASSWORD=changeit
 VALIDITY=36524
 
 CLUSTER="$1"; shift
+PASSWORD="$1"; shift
 
-if [ -z "$CLUSTER" ]; then
-	echo "Usage: gen_cluster.sh <cluster>"
+if [ -z "$CLUSTER" ] || [ -z "$PASSWORD" ]; then
+	echo "Usage: gen_cluster.sh <cluster> <password>"
 	exit 1
 fi
 

@@ -1,9 +1,5 @@
 ---
 
-- hosts: localhost
-  roles:
-  - cassandra-certs
-
 # Gather facts
 - hosts: all:!localhost
   tasks:
@@ -19,20 +15,23 @@
   roles:
   - rabbitmq
 
+- hosts: localhost
+  gather_facts: False
+  roles:
+  - cassandra-certs
+
 - hosts: cassandra
   gather_facts: False
   roles:
-  - cassandra
+  - cassandra-setup
 
 - hosts: cassandra:&cassandra_seed
   gather_facts: False
   serial: 1
-  tasks:
-  - name: Cassandra is started (seed)
-    include: start_cassandra.yml
+  roles:
+  - cassandra-start
 
 - hosts: cassandra:!cassandra_seed
   gather_facts: False
-  tasks:
-  - name: Cassandra is started
-    include: start_cassandra.yml
+  roles:
+  - cassandra-start

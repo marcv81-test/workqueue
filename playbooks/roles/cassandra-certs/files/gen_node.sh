@@ -1,13 +1,13 @@
 #!/bin/bash
 
-PASSWORD=changeit
 VALIDITY=36524
 
 CLUSTER="$1"; shift
 NODE="$1"; shift
+PASSWORD="$1"; shift
 
-if [ -z "$CLUSTER" ] || [ -z "$NODE" ]; then
-	echo "Usage: gen_node.sh <cluster> <node>"
+if [ -z "$CLUSTER" ] || [ -z "$NODE" ] || [ -z "$PASSWORD" ]; then
+	echo "Usage: gen_node.sh <cluster> <node> <password>"
 	exit 1
 fi
 
@@ -16,9 +16,7 @@ if [ ! -d "$CLUSTER" ]; then
 	exit 1
 fi
 
-rm -f \
-	"${CLUSTER}/${NODE}-key.pem" "${CLUSTER}/${NODE}-cert.pem" \
-	"${CLUSTER}/${NODE}.pkcs12" "${CLUSTER}/${NODE}-keystore.jks"
+rm -f "${CLUSTER}/${NODE}-keystore.jks"
 
 echo "* Generate node key and certificate request"
 openssl req \
@@ -35,12 +33,14 @@ echo "* Package node PKCS12 key-certificate"
 openssl pkcs12 -export \
 	-in "${CLUSTER}/${NODE}-cert.pem" -inkey "${CLUSTER}/${NODE}-key.pem" \
 	-name "${NODE}" -out "${CLUSTER}/${NODE}.pkcs12" -passout pass:"${PASSWORD}"
+rm "${CLUSTER}/${NODE}-key.pem" "${CLUSTER}/${NODE}-cert.pem"
 
 echo "* Add node PKCS12 key-certificate to node Java keystore"
 keytool \
 	-importkeystore -alias "${NODE}" \
 	-srckeystore "${CLUSTER}/${NODE}.pkcs12" -srcstorepass "${PASSWORD}" -srcstoretype pkcs12 \
 	-destkeystore "${CLUSTER}/${NODE}-keystore.jks" -deststorepass "${PASSWORD}"
+rm "${CLUSTER}/${NODE}.pkcs12"
 
 echo "* Add cluster certificate to node Java keystore"
 keytool \

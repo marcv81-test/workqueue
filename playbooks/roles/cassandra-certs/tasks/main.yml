@@ -1,14 +1,14 @@
 ---
 
 - name: Generate cluster CA
-  shell: "./gen_cluster.sh cassandra-{{environment_name}}"
+  shell: "./gen_cluster.sh {{cassandra_cluster}} {{cassandra_truststore_password}}"
   args:
-    chdir: certs
-    creates: "cassandra-{{environment_name}}/cluster-cert.pem"
+    chdir: playbooks/roles/cassandra-certs/files
+    creates: "{{cassandra_cluster}}/cluster-truststore.jks"
 
 - name: Generate nodes keys
-  shell: "./gen_node.sh cassandra-{{environment_name}} {{item}}"
+  shell: "./gen_node.sh {{cassandra_cluster}} {{item}} {{cassandra_keystore_password}}"
   args:
-    chdir: certs
-    creates: "cassandra-{{environment_name}}/{{item}}-cert.pem"
+    chdir: playbooks/roles/cassandra-certs/files
+    creates: "{{cassandra_cluster}}/{{item}}-keystore.jks"
   with_items: groups.cassandra
