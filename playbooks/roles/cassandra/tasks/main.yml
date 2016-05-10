@@ -31,6 +31,16 @@
   with_items:
   - cassandra
 
+- name: Cluster truststore is installed
+  copy:
+    src: "../certs/cassandra-{{environment_name}}/cluster-truststore.jks"
+    dest: "/etc/cassandra/cluster-truststore.jks"
+
+- name: Node keystore is installed
+  copy:
+    src: "../certs/cassandra-{{environment_name}}/{{ansible_hostname}}-keystore.jks"
+    dest: "/etc/cassandra/node-keystore.jks"
+
 # Uncomment to reset all nodes (DANGER!)
 #- file: path=/etc/cassandra/.configured state=absent
 

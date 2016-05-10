@@ -9,4 +9,4 @@
 - name: Service is ready
   wait_for:
     host: "{{ ansible_host }}"
-    port: 7000
+    port: 7001

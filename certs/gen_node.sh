@@ -34,12 +34,12 @@ rm "${CLUSTER}/${NODE}-req.pem"
 echo "* Package node PKCS12 key-certificate"
 openssl pkcs12 -export \
 	-in "${CLUSTER}/${NODE}-cert.pem" -inkey "${CLUSTER}/${NODE}-key.pem" \
-	-name "${NODE}" -out "${CLUSTER}/${NODE}.pkcs12" -passout pass:""
+	-name "${NODE}" -out "${CLUSTER}/${NODE}.pkcs12" -passout pass:"${PASSWORD}"
 
 echo "* Add node PKCS12 key-certificate to node Java keystore"
 keytool \
 	-importkeystore -alias "${NODE}" \
-	-srckeystore "${CLUSTER}/${NODE}.pkcs12" -srcstorepass "" -srcstoretype pkcs12 \
+	-srckeystore "${CLUSTER}/${NODE}.pkcs12" -srcstorepass "${PASSWORD}" -srcstoretype pkcs12 \
 	-destkeystore "${CLUSTER}/${NODE}-keystore.jks" -deststorepass "${PASSWORD}"
 
 echo "* Add cluster certificate to node Java keystore"
