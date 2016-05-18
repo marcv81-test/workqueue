@@ -1,5 +1,0 @@
----
-
-cassandra_cluster: test
-cassandra_truststore_password: trustpass
-cassandra_keystore_password: keypass

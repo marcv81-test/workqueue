@@ -4,18 +4,8 @@ This is a proof of concept for a distributed builds app.
 
 # Setup
 
-## Vagrant/Ansible
-
-    vagrant up
-    ansible-playbook -i inventory.py playbooks/site.yml
-
-# Test
-
-    cd app
-
 ## Python
 
-    apt-get install python-virtualenv python-dev libffi-dev libssl-dev
     virtualenv venv
     source venv/bin/activate
     pip install ansible pika cassandra-driver
