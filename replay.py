@@ -1,14 +1,12 @@
-import cassandra.cluster
 import sys
+import util.cluster
 import uuid
 
 build_id = sys.argv[1]
 return_code = 1
 
 # Cassandra setup
-cluster = cassandra.cluster.Cluster(
-		['192.168.56.101', '192.168.56.101'])
-session = cluster.connect('test')
+session = util.cluster.get_cassandra_session()
 
 select_statement = session.prepare(
 		'SELECT event_type, data '

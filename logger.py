@@ -1,6 +1,7 @@
-import cassandra.cluster
+import ssl
 import threading
 import time
+import util.cluster
 import util.messaging
 import uuid
 
@@ -16,10 +17,7 @@ class DatabaseBuildEventReceiver(
 				util.messaging.open_channel())
 
 		# Cassandra setup
-		self._cluster = cassandra.cluster.Cluster(
-				['192.168.56.101', '192.168.56.102'])
-		self._session = self._cluster.connect('test')
-
+		self._session = util.cluster.get_cassandra_session()
 		self._statement = self._session.prepare(
 				'INSERT INTO '
 				'build_events (build_id, clock, event_type, data) '

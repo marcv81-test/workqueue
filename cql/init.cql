@@ -1,5 +1,6 @@
 DROP KEYSPACE IF EXISTS test;
 CREATE KEYSPACE test WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'};
-USE test;
 
-CREATE TABLE build_events (build_id uuid, clock int, event_type text, data text, PRIMARY KEY (build_id, clock));
+DROP USER IF EXISTS test_user;
+CREATE USER test_user WITH PASSWORD 'password';
+GRANT ALL ON KEYSPACE test TO test_user;
